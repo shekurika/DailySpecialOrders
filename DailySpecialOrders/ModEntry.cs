@@ -46,7 +46,9 @@ namespace DailySpecialOrders
             }
         }
 
-        //if instantly refresh is on, refresh after closing SpecialOrdersBoard
+        /// <summary>
+        /// Detect if the Special Order Board was just closed and if yes, refresh Special Orders if needed
+        /// </summary>
         private void OnMenuChanged(object sender, MenuChangedEventArgs e)
         {
             if (Config.RefreshAfterPicking && e.OldMenu is SpecialOrdersBoard && !(e.NewMenu is SpecialOrdersBoard))
@@ -55,7 +57,9 @@ namespace DailySpecialOrders
             }
         }
 
-
+        /// <summary>
+        /// Refreshes if appropiate
+        /// </summary>
         private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
             if (!Game1.player.IsMainPlayer)
@@ -98,7 +102,7 @@ namespace DailySpecialOrders
 
         /// <summary>
         /// Postfix SetDuration so the player gets the correct duration to complete the SpecialOrder
-        /// (In vanilla they'd get (duration - daysSinceMonday)
+        /// (In vanilla they'd get (duration - daysSinceMonday), now its duration)
         /// </summary>
         static class HarmonyPatches{
 
@@ -109,7 +113,11 @@ namespace DailySpecialOrders
                    postfix: new HarmonyMethod(typeof(HarmonyPatches), nameof(HarmonyPatches.SpecialOrder_SetDuration_PostFix))
                 );
             }
-
+            /// <summary>
+            /// Harmony Postifx function to change the remaining duration of the special order to not start on monday.
+            /// </summary>
+            /// <param name="__instance"></param>
+            /// <param name="duration"></param>
             public static void SpecialOrder_SetDuration_PostFix(ref SpecialOrder __instance, QuestDuration duration)
             {
                 if(__instance == null)
